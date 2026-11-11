@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U7 對數函數 測驗系統</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX CSS & JS for Math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <style>
+        .katex { font-size: 1.1em; }
+        .math-btn { @apply bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-1 px-3 rounded border border-slate-300 text-sm transition; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800 pb-20">
+
+    <!-- Header Navigation -->
+    <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-lg md:text-xl font-bold flex items-center gap-2">
+                <span>📐</span> U7 對數函數 測驗系統
+            </h1>
+            <button onclick="toggleAdminModal()" class="bg-indigo-800 hover:bg-indigo-900 text-xs md:text-sm px-3 py-1.5 rounded-lg border border-indigo-400 font-medium transition flex items-center gap-1">
+                ⚙️ 教師後台
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-6">
+
+        <!-- Student Info Bar -->
+        <section id="student-info-section" class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
+            <h2 class="text-base font-bold text-slate-700 mb-3 flex items-center gap-2">
+                👤 學生個人資訊
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">班級座號</label>
+                    <input type="text" id="student-id" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">姓名</label>
+                    <input type="text" id="student-name" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+            </div>
+        </section>
+
+        <!-- Retry Hint Banner -->
+        <div id="retry-hint-banner" class="hidden mb-6 p-4 bg-amber-50 border-l-4 border-amber-500 text-amber-800 rounded-r-lg text-sm shadow-sm">
+            ⚠️ <strong>提示：</strong> 部分題目回答錯誤，您還有最後 1 次修改重試的機會！請重新檢查紅框標示的題目。
+        </div>
+
+        <!-- Questions List -->
+        <form id="quiz-form" onsubmit="event.preventDefault(); submitQuiz();" class="space-y-6">
+
+            <!-- Q1 -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                <div class="font-semibold text-slate-800 border-b pb-2">1. 有關對數 $\log_{a}b$ 的敘述：</div>
+                
+                <div id="q-card-q1_1">
+                    <label class="block text-sm mb-1">(1) 底數 $a$ 必須滿足條件：</label>
+                    <input type="text" id="q1_1" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <div class="result-msg text-sm mt-1 font-medium"></div>
+                </div>
+
+                <div id="q-card-q1_2">
+                    <label class="block text-sm mb-1">(2) 真數 $b$ 必須滿足條件：</label>
+                    <input type="text" id="q1_2" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <div class="result-msg text-sm mt-1 font-medium"></div>
+                </div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                <div class="font-semibold text-slate-800 border-b pb-2">2. 指數與對數轉換：</div>
+                
+                <div id="q-card-q2_1">
+                    <label class="block text-sm mb-1">(1) 任意正數 $b$ 都可以化成 $10$ 的次方的形式，即 $b = $</label>
+                    <input type="text" id="q2_1" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <div class="result-msg text-sm mt-1 font-medium"></div>
+                </div>
+
+                <div id="q-card-q2_2">
+                    <label class="block text-sm mb-1">(2) 任意正數 $b$ 都可以化成 $a^{x}\ (a>0, a\ne 1)$ 的形式，即 $b = $</label>
+                    <input type="text" id="q2_2" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <div class="result-msg text-sm mt-1 font-medium"></div>
+                </div>
+
+                <div id="q-card-q2_3">
+                    <label class="block text-sm mb-1">(3)若 $4 = a^{x}\ (a>0, a\ne 1)$，則 $x = $</label>
+                    <input type="text" id="q2_3" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <div class="result-msg text-sm mt-1 font-medium"></div>
+                </div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border border-slate-200" id="q-card-q3">
+                <div class="font-semibold text-slate-800 mb-3">3. 圖形平移判斷，請選出正確的選項（如：(1)(2)）：</div>
+                <div class="text-sm text-slate-600 mb-3 space-y-1">
+                    <p>(1) $y=2^x$ 圖形向左平移 3 單位可得 $y=2^{x+3}$ 圖形。</p>
+                    <p>(2) $y=4\times 2^x$ 圖形可由 $y=2^x$ 向左平移 2 單位得到。</p>
+                    <p>(3) 若 $a>0, a\ne 1$，則 $y=4\times a^x$ 可由 $y=a^x$ 平移而得。</p>
+                </div>
+                <input type="text" id="q3" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div class="result-msg text-sm mt-2 font-medium"></div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border border-slate-200" id="q-card-q4">
+                <div class="font-semibold text-slate-800 mb-3">4. 選出正確的選項：</div>
+                <div class="text-sm text-slate-600 mb-3 space-y-1">
+                    <p>(1) $5^{\log 3} = (10^{\log 5})^{\log 3}$</p>
+                    <p>(2) $5^{\log 3} = 10^{\log 5 \cdot \log 3}$</p>
+                    <p>(3) $3^{\log 5} = (10^{\log 3})^{\log 5}$</p>
+                    <p>(4) $3^{\log 5} = 10^{\log 3 \cdot \log 5}$</p>
+                    <p>(5) $5^{\log 3} = 3^{\log 5}$</p>
+                </div>
+                <input type="text" id="q4" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div class="result-msg text-sm mt-2 font-medium"></div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border border-slate-200" id="q-card-q5">
+                <div class="font-semibold text-slate-800 mb-3">5. 選出正確的選項：</div>
+                <div class="text-sm text-slate-600 mb-3 space-y-1">
+                    <p>(1) $\log 5^{\log 3} = \log 3 \cdot \log 5$</p>
+                    <p>(2) $\log 3^{\log 5} = \log 5 \cdot \log 3$</p>
+                    <p>(3) $5^{\log 3} = 3^{\log 5}$</p>
+                    <p>(4) $7^{\log 5} = 5^{\log 7}$</p>
+                    <p>(5) $12^{\log 3} = 3^{\log 12}$</p>
+                </div>
+                <input type="text" id="q5" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div class="result-msg text-sm mt-2 font-medium"></div>
+            </div>
+
+            <!-- Q6 -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border border-slate-200" id="q-card-q6">
+                <div class="font-semibold text-slate-800 mb-3">6. 選出正確的選項（對數函數圖形與遞增遞減性質）：</div>
+                <div class="text-sm text-slate-600 mb-3 space-y-1">
+                    <p>(1) 圖形 (A) 與 (B) 判斷哪一個為正確圖形。</p>
+                    <p>(2) $y=\log_{\frac{1}{2}}x$ 為嚴格遞減函數。</p>
+                    <p>(3) $\log_{\frac{1}{2}}\frac{1}{3} > \log_{\frac{1}{2}}\frac{1}{2}$</p>
+                    <p>(4) 若 $a>1$，$y=\log_{a}x$ 為嚴格遞增函數。</p>
+                    <p>(5) 若 $a>1>b>0$，則 $\log_{a}1 > \log_{a}b$</p>
+                    <p>(6) $y=\log_{\frac{1}{2}}x$ 圖形凹口向上。</p>
+                    <p>(7) 若 $a>1$，則 $y=\log_{a}x$ 圖形凹口向下。</p>
+                </div>
+                <input type="text" id="q6" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div class="result-msg text-sm mt-2 font-medium"></div>
+            </div>
+
+            <!-- Q7 -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border border-slate-200" id="q-card-q7">
+                <div class="font-semibold text-slate-800 mb-3">7. 選出正確的選項（化簡）：</div>
+                <div class="text-sm text-slate-600 mb-3 space-y-1">
+                    <p>(1) $9^{\log_3 2} = 3^{2\log_3 2}$</p>
+                    <p>(2) $9^{\log_3 2} = 3^{\log_3 4}$</p>
+                    <p>(3) $9^{\log_3 2} = 4$</p>
+                    <p>(4) $9^{\log_3 \frac{1}{5}} = 25$</p>
+                </div>
+                <input type="text" id="q7" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div class="result-msg text-sm mt-2 font-medium"></div>
+            </div>
+
+            <!-- Q8 -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border border-slate-200" id="q-card-q8">
+                <div class="font-semibold text-slate-800 mb-3">8. 選出正確的選項（計算）：</div>
+                <div class="text-sm text-slate-600 mb-3 space-y-1">
+                    <p>(1) $\frac{1}{2}\log 20 - \log \sqrt{2} = \frac{1}{2}$</p>
+                    <p>(2) $4^{-2\log_4 2} + 9^{\log_3 \frac{1}{2}} = \frac{1}{2}$</p>
+                    <p>(3) $\log_2 \frac{4\sqrt{3}}{3} + \log_4 6 = \frac{5}{2}$</p>
+                    <p>(5) $2^{-\log_4 25} = \frac{1}{5}$</p>
+                </div>
+                <input type="text" id="q8" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div class="result-msg text-sm mt-2 font-medium"></div>
+            </div>
+
+            <!-- Q9 -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border border-slate-200" id="q-card-q9">
+                <div class="font-semibold text-slate-800 mb-3">9. 選出正確的選項：</div>
+                <div class="text-sm text-slate-600 mb-3 space-y-1">
+                    <p>(1) $\log(-10)$ 無定義</p>
+                    <p>(2) $\log(-10)^2 = 2$</p>
+                    <p>(3) $1 = \log_4 4$</p>
+                    <p>(4) $1 + \log_4(x-1) = \log_4 4(x-1)$</p>
+                    <p>(5) $\log_2(x-9) = \log_4(x-9)^2$</p>
+                    <p>(6) 方程式 $\log_4 4(x-1) = \log_4(x-9)^2$ 之解為 $x=17$ 或 $5$</p>
+                    <p>(7) 方程式 $1+\log_4(x-1) = \log_2(x-9)$ 有唯一解 $x=17$</p>
+                </div>
+                <input type="text" id="q9" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div class="result-msg text-sm mt-2 font-medium"></div>
+            </div>
+
+            <!-- Q10 -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border border-slate-200" id="q-card-q10">
+                <div class="font-semibold text-slate-800 mb-3">10. 解不等式 $\log_{0.5}(x+1) < \log_{0.25}(x^2-x-1)$ 的解範圍：</div>
+                <input type="text" id="q10" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div class="result-msg text-sm mt-2 font-medium"></div>
+            </div>
+
+            <!-- Submit Button Area -->
+            <div class="pt-4">
+                <button type="submit" id="btn-submit" class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition duration-150 ease-in-out text-lg flex items-center justify-center gap-2">
+                    <span>🚀</span> 提交答案
+                </button>
+            </div>
+        </form>
+
+        <!-- Result Overview Area -->
+        <div id="result-summary" class="hidden bg-white p-6 rounded-xl shadow-sm border border-slate-200 mt-8 text-center space-y-4">
+            <h3 class="text-xl font-bold text-slate-800">測驗完成！</h3>
+            <div class="text-4xl font-black text-indigo-600 my-2" id="score-text">0 / 100 分</div>
+            <p id="accuracy-text" class="text-slate-600 font-medium"></p>
+            <p class="text-xs text-slate-400">已成功將成績上傳至系統數據庫。</p>
+        </div>
+
+    </main>
+
+    <!-- Mobile Floating Math Toolbar -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-2 shadow-lg flex justify-around items-center z-30 overflow-x-auto">
+        <span class="text-xs text-slate-400 font-bold px-1 shrink-0">快捷輸入：</span>
+        <button type="button" onclick="insertSymbol('√')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-1.5 px-3 rounded border border-indigo-200 text-sm shrink-0">√ 根號</button>
+        <button type="button" onclick="insertSymbol('log_{a}b')" class="math-btn shrink-0">log_a b</button>
+        <button type="button" onclick="insertSymbol('10^{log b}')" class="math-btn shrink-0">10^(log b)</button>
+        <button type="button" onclick="insertSymbol('a^{log_{a}b}')" class="math-btn shrink-0">a^(log_a b)</button>
+        <button type="button" onclick="insertSymbol('log_{a}4')" class="math-btn shrink-0">log_a 4</button>
+        <button type="button" onclick="insertSymbol('<')" class="math-btn shrink-0">&lt;</button>
+        <button type="button" onclick="insertSymbol('>')" class="math-btn shrink-0">&gt;</button>
+    </div>
+
+    <!-- Admin Modal -->
+    <div id="admin-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+            <!-- Modal Header -->
+            <div class="bg-slate-800 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg">教師管理後台</h3>
+                <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+            
+            <!-- Auth View -->
+            <div id="admin-auth" class="p-6 space-y-4">
+                <p class="text-sm text-slate-600">請輸入管理者密碼：(預設密碼：<code class="bg-slate-100 px-1 py-0.5 rounded text-indigo-600">admin123</code>)</p>
+                <input type="password" id="admin-password" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="請輸入密碼">
+                <button onclick="checkAdminPassword()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg transition">登入後台</button>
+            </div>
+
+            <!-- Content View -->
+            <div id="admin-content" class="hidden p-6 overflow-y-auto space-y-6">
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
+                        <div class="text-xs text-indigo-600 font-semibold">總交卷人數</div>
+                        <div id="stat-count" class="text-xl font-bold text-indigo-900 mt-1">0</div>
+                    </div>
+                    <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                        <div class="text-xs text-emerald-600 font-semibold">平均分數</div>
+                        <div id="stat-avg" class="text-xl font-bold text-emerald-900 mt-1">0</div>
+                    </div>
+                    <div class="bg-amber-50 p-3 rounded-lg border border-amber-100">
+                        <div class="text-xs text-amber-600 font-semibold">最高 / 最低分</div>
+                        <div id="stat-range" class="text-xl font-bold text-amber-900 mt-1">0 / 0</div>
+                    </div>
+                </div>
+
+                <!-- Action Toolbar -->
+                <div class="flex justify-between items-center gap-2 pt-2 border-t">
+                    <h4 class="font-bold text-slate-700">學生作答紀錄列表</h4>
+                    <div class="flex gap-2">
+                        <button onclick="exportCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded transition">匯出 CSV</button>
+                        <button onclick="clearRecords()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3 py-1.5 rounded transition">清空紀錄</button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto border rounded-lg">
+                    <table class="w-full text-sm text-left text-slate-600">
+                        <thead class="text-xs text-slate-700 uppercase bg-slate-100 border-b">
+                            <tr>
+                                <th class="px-4 py-2.5">座號</th>
+                                <th class="px-4 py-2.5">姓名</th>
+                                <th class="px-4 py-2.5">總分</th>
+                                <th class="px-4 py-2.5">答對題數</th>
+                                <th class="px-4 py-2.5">提交時間</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-records-tbody">
+                            <!-- Records will be rendered here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Logic JavaScript -->
+    <script>
+        // Standard Answer Keys
+        const answersKey = {
+            'q1_1': ['a>0,a!=1', 'a>0且a!=1', 'a>0且a≠1', 'a>0,a≠1'],
+            'q1_2': ['b>0'],
+            'q2_1': ['10^{logb}', '10^logb', '10^(logb)'],
+            'q2_2': ['a^{log_{a}b}', 'a^log_a(b)', 'a^{log_a b}'],
+            'q2_3': ['log_{a}4', 'log_a(4)', 'log_a 4'],
+            'q3': ['(1)(2)(3)', '1,2,3', '123', '(1),(2),(3)'],
+            'q4': ['(1)(2)(3)(4)(5)', '1,2,3,4,5', '12345'],
+            'q5': ['(1)(2)(3)(4)(5)', '1,2,3,4,5', '12345'],
+            'q6': ['(1)(2)(3)(4)(5)(6)(7)', '1,2,3,4,5,6,7', '(A)(2)(3)(4)(5)(6)(7)'],
+            'q7': ['(1)(2)(3)', '1,2,3', '123'],
+            'q8': ['(1)(2)(3)(5)', '1,2,3,5', '1235'],
+            'q9': ['(1)(2)(3)(4)(5)(7)', '1,2,3,4,5,7', '123457'],
+            'q10': ['-2/3<x<(1-√5)/2 or x>(1+√5)/2', '-2/3<x<(1-sqrt(5))/2 or x>(1+sqrt(5))/2', '-2/3<x<(1-√5)/2或x>(1+√5)/2']
+        };
+
+        const totalItemsCount = Object.keys(answersKey).length;
+        let attemptCount = 0; // 作答次數
+
+        // Global Active Input Tracking
+        let currentActiveInput = null;
+        document.querySelectorAll('.quiz-input').forEach(input => {
+            input.addEventListener('focus', () => currentActiveInput = input);
+        });
+
+        function insertSymbol(symbol) {
+            if (!currentActiveInput) {
+                const firstInput = document.querySelector('.quiz-input');
+                if (firstInput) firstInput.focus();
+                currentActiveInput = firstInput;
+            }
+            if (currentActiveInput) {
+                const start = currentActiveInput.selectionStart;
+                const end = currentActiveInput.selectionEnd;
+                const val = currentActiveInput.value;
+                currentActiveInput.value = val.substring(0, start) + symbol + val.substring(end);
+                currentActiveInput.selectionStart = currentActiveInput.selectionEnd = start + symbol.length;
+                currentActiveInput.focus();
+            }
+        }
+
+        function normalizeStr(str) {
+            return str.replace(/\s+/g, '')
+                      .toLowerCase()
+                      .replace(/\\/g, '')
+                      .replace(/sqrt/g, '√');
+        }
+
+        // Submit Quiz Core Logic
+        function submitQuiz() {
+            const studentId = document.getElementById('student-id').value.trim();
+            const studentName = document.getElementById('student-name').value.trim();
+
+            if (!studentId || !studentName) {
+                alert('請先填寫班級座號與姓名！');
+                document.getElementById('student-info-section').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            attemptCount++;
+
+            let correctCount = 0;
+            let wrongItems = [];
+            const userAnswers = {};
+
+            Object.keys(answersKey).forEach(key => {
+                const inputEl = document.getElementById(key);
+                const val = inputEl.value.trim();
+                userAnswers[key] = val;
+
+                const normalizedVal = normalizeStr(val);
+                const isCorrect = answersKey[key].some(ans => normalizeStr(ans) === normalizedVal);
+
+                const cardEl = document.getElementById(`q-card-${key}`) || inputEl.parentElement;
+                const msgEl = cardEl.querySelector('.result-msg');
+
+                if (isCorrect) {
+                    correctCount++;
+                    inputEl.classList.remove('border-rose-500', 'bg-rose-50');
+                    inputEl.classList.add('border-emerald-500', 'bg-emerald-50');
+                    if (msgEl) {
+                        msgEl.className = 'result-msg text-sm mt-1 font-semibold text-emerald-600';
+                        msgEl.innerText = '✓ 正確';
+                    }
+                } else {
+                    wrongItems.push(key);
+                    inputEl.classList.remove('border-emerald-500', 'bg-emerald-50');
+                    inputEl.classList.add('border-rose-500', 'bg-rose-50');
+                    if (msgEl) {
+                        msgEl.className = 'result-msg text-sm mt-1 font-semibold text-rose-600';
+                        msgEl.innerText = '✗ 錯誤';
+                    }
+                }
+            });
+
+            // Check Retry Condition (Max 2 Attempts)
+            if (wrongItems.length > 0 && attemptCount < 2) {
+                document.getElementById('retry-hint-banner').classList.remove('hidden');
+                document.getElementById('retry-hint-banner').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            // Lock Inputs after Max Attempts or Full Score
+            document.getElementById('retry-hint-banner').classList.add('hidden');
+            document.querySelectorAll('.quiz-input, #student-id, #student-name').forEach(el => el.disabled = true);
+            document.getElementById('btn-submit').classList.add('hidden');
+
+            const score = Math.round((correctCount / totalItemsCount) * 100);
+
+            // Display Result Summary (Hide Answers)
+            const summaryEl = document.getElementById('result-summary');
+            document.getElementById('score-text').innerText = `${score} 分`;
+            document.getElementById('accuracy-text').innerText = `共 ${totalItemsCount} 項填答，您答對了 ${correctCount} 項。`;
+            summaryEl.classList.remove('hidden');
+            summaryEl.scrollIntoView({ behavior: 'smooth' });
+
+            // Save Record
+            saveRecord({
+                id: studentId,
+                name: studentName,
+                score: score,
+                correctCount: correctCount,
+                answers: userAnswers,
+                timestamp: new Date().toLocaleString('zh-TW')
+            });
+        }
+
+        function saveRecord(record) {
+            let records = JSON.parse(localStorage.getItem('u7_quiz_records') || '[]');
+            records.push(record);
+            localStorage.setItem('u7_quiz_records', JSON.stringify(records));
+        }
+
+        // Admin Modal Controls
+        function toggleAdminModal() {
+            const modal = document.getElementById('admin-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function checkAdminPassword() {
+            const pwd = document.getElementById('admin-password').value;
+            if (pwd === 'admin123') {
+                document.getElementById('admin-auth').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+                renderAdminStats();
+            } else {
+                alert('密碼錯誤！');
+            }
+        }
+
+        function renderAdminStats() {
+            const records = JSON.parse(localStorage.getItem('u7_quiz_records') || '[]');
+            document.getElementById('stat-count').innerText = records.length;
+
+            if (records.length === 0) {
+                document.getElementById('stat-avg').innerText = '0';
+                document.getElementById('stat-range').innerText = '0 / 0';
+                document.getElementById('student-records-tbody').innerHTML = `<tr><td colspan="5" class="text-center py-4 text-slate-400">目前尚無作答紀錄</td></tr>`;
+                return;
+            }
+
+            const scores = records.map(r => r.score);
+            const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+            const max = Math.max(...scores);
+            const min = Math.min(...scores);
+
+            document.getElementById('stat-avg').innerText = avg;
+            document.getElementById('stat-range').innerText = `${max} / ${min}`;
+
+            const tbody = document.getElementById('student-records-tbody');
+            tbody.innerHTML = records.map(r => `
+                <tr class="border-b hover:bg-slate-50">
+                    <td class="px-4 py-2 font-medium">${r.id}</td>
+                    <td class="px-4 py-2">${r.name}</td>
+                    <td class="px-4 py-2 font-bold ${r.score >= 60 ? 'text-emerald-600' : 'text-rose-600'}">${r.score}</td>
+                    <td class="px-4 py-2">${r.correctCount} / ${totalItemsCount}</td>
+                    <td class="px-4 py-2 text-xs text-slate-400">${r.timestamp}</td>
+                </tr>
+            `).join('');
+        }
+
+        function clearRecords() {
+            if (confirm('確定要清空所有學生的作答紀錄嗎？')) {
+                localStorage.removeItem('u7_quiz_records');
+                renderAdminStats();
+            }
+        }
+
+        function exportCSV() {
+            const records = JSON.parse(localStorage.getItem('u7_quiz_records') || '[]');
+            if (records.length === 0) {
+                alert('目前沒有紀錄可匯出！');
+                return;
+            }
+
+            let csvContent = "\uFEFF座號,姓名,總分,答對題數,提交時間\n";
+            records.forEach(r => {
+                csvContent += `"${r.id}","${r.name}",${r.score},${r.correctCount},"${r.timestamp}"\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `U7_對數函數_測驗成績_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Auto Render KaTeX Math Expressions
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false}
+                ]
+            });
+        });
+    </script>
+</body>
+</html>
